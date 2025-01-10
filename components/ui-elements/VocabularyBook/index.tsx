@@ -30,11 +30,6 @@ export default function VocabularyBook({
 }) {
   return (
     <Dialog open={isVocabularyStarted} onOpenChange={setIsVocabularyStarted}>
-      <DialogTrigger
-        className="mx-2 inline-flex h-9 w-40 items-center justify-center whitespace-nowrap rounded-lg bg-primary p-2 text-sm font-medium text-primary-foreground shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
-        disabled={fileData["contents"].length === 0}>
-        単語帳開始
-      </DialogTrigger>
       <DialogContent
         className="flex h-4/5 w-4/5 max-w-none flex-col"
         onEscapeKeyDown={e => e.preventDefault()}

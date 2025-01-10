@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-50 flex w-full items-center justify-between border-b-2 bg-[#e5f7ff] p-5 shadow">
+    <header className="sticky top-0 z-50 flex w-full items-center justify-between border-b-2 bg-background p-5 shadow">
       <Link href="./" className="mr-5" title="ホームへ">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/learn-and-check/logo.webp" alt="ロゴ" height="50px" width="100px" />

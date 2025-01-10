@@ -15,25 +15,32 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import DataTable from "@/components/ui-elements/dataTable";
 import { ColumnDef } from "@tanstack/react-table";
 import { useKeyboardShortcut } from "@/hooks/useKeyboardShortcut";
+import { UUID } from "crypto";
 
 export type FileType = {
-  name?: string;
+  name: string;
+  id: UUID;
   contents: {
     question: string;
     answer: string;
-    isCheck: boolean;
-    hint?: string;
-    explanation?: string;
-    id: string;
+    id: UUID;
   }[];
 };
 export type TableType = {
   index: number;
   question: string;
   answer: string;
+};
+export type ResultType = {
+  id: UUID;
+  contents: {
+    id: UUID;
+    correctRate: number;
+    latestResult: boolean;
+    lastUpdated: string;
+  }[];
 };
 const columns: ColumnDef<TableType>[] = [
   {
@@ -61,28 +68,25 @@ const columns: ColumnDef<TableType>[] = [
 ];
 
 export default function Create() {
-  const [fileData, setFileData] = useState<FileType>({ contents: [] });
+  const [fileData, setFileData] = useState<FileType>({
+    name: "",
+    id: createUUID() as UUID,
+    contents: [],
+  });
+  const [resultData, setResultData] = useState<ResultType>({
+    id: createUUID() as UUID,
+    contents: [],
+  });
   const [importedCSV, setImportedCSV] = useState<string>("");
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [createMode, setCreateMode] = useState<"edit" | "display">("edit");
   const [isVocabularyStarted, setIsVocabularyStarted] = useState<boolean>(false);
-  const columns: ColumnDef<TableType>[] = [
-    { accessorKey: "index", header: "No." },
-    { accessorKey: "question", header: "問題" },
-    { accessorKey: "answer", header: "答え" },
-  ];
-  const TableData = fileData?.contents?.map((content, index) => ({
-    index: index + 1,
-    question: content.question,
-    answer: content.answer,
-  }));
 
   function addCard() {
     setFileData({
       ...fileData,
       contents: [
         ...(fileData?.contents || []),
-        { question: "", answer: "", isCheck: false, id: createUUID() },
+        { question: "", answer: "", id: createUUID() as UUID },
       ],
     });
   }
@@ -90,14 +94,11 @@ export default function Create() {
     const csv = importedCSV;
     const lines = csv.split("\n");
     const newContents = lines.map(line => {
-      const [answer, question] = line.split("\t");
+      const [question, answer] = line.split("\t");
       return {
         question,
         answer,
-        hint: "",
-        explanation: "",
-        isCheck: false,
-        id: createUUID(),
+        id: createUUID() as UUID,
       };
     });
     setFileData({
@@ -117,7 +118,7 @@ export default function Create() {
       setFileData(JSON.parse(data.content));
     });
   }
-  useKeyboardShortcut(["ctrl", "a"], e => {
+  useKeyboardShortcut(["ctrl", "m"], e => {
     e.preventDefault();
     addCard();
   });
@@ -133,14 +134,6 @@ export default function Create() {
     e.preventDefault();
     upload();
   });
-  useKeyboardShortcut(["ctrl", "e"], e => {
-    e.preventDefault();
-    setCreateMode("edit");
-  });
-  useKeyboardShortcut(["ctrl", "d"], e => {
-    e.preventDefault();
-    setCreateMode("display");
-  });
   useKeyboardShortcut(["ctrl", "enter"], e => {
     e.preventDefault();
     setIsVocabularyStarted(true);
@@ -148,97 +141,92 @@ export default function Create() {
 
   return (
     <>
-      <main className="mx-5 my-10">
-        <div className="mx-auto flex max-w-7xl flex-col flex-wrap items-center gap-10">
-          {createMode === "edit" ? (
-            <section className="grid w-full gap-5 rounded-2xl border-2 border-blue-600 px-20 py-5 text-center">
-              <div>
-                <h1 className="text-4xl">入力欄</h1>
-                <p>以下の入力欄に入力するか、規定のファイル形式のファイルを読み込んで下さい。</p>
-                <Input type="file" accept=".learn-and-check.json" className="hidden" />
-                <div className="flex items-center justify-center">
-                  <Button className="w-40 rounded-lg p-2" onClick={upload}>
-                    ファイルを読み込む
-                  </Button>
-                  <div className="[max-width:50%]" />
-                </div>
-              </div>
-              <div className="grid gap-5">
-                <label className=" flex w-full justify-center">
-                  <Input
-                    type="text"
-                    defaultValue={fileData?.name}
-                    onChange={e => setFileData({ ...fileData, name: e.target.value } as FileType)}
-                    placeholder="タイトル"
-                    className="flex-1 rounded-[5px] border border-solid border-[#767676]"
-                  />
-                </label>
-                <div className="grid w-full min-w-[12.5rem] list-decimal gap-5">
-                  {fileData?.contents?.map((content, index) => (
-                    <Card
-                      key={content.id}
-                      index={index}
-                      content={content}
-                      setFileData={setFileData}
-                    />
-                  ))}
-                </div>
-                <div className="">
-                  <Button className="mx-2 w-40 rounded-lg p-2" onClick={addCard}>
-                    カードを追加
-                  </Button>
-                  <Dialog open={isDialogOpen} onOpenChange={() => setIsDialogOpen(!isDialogOpen)}>
-                    <DialogTrigger asChild>
-                      <Button className="mx-2 w-40 rounded-lg p-2">インポート</Button>
-                    </DialogTrigger>
-                    <DialogContent className="flex h-4/5 w-4/5 max-w-none flex-col">
-                      <DialogHeader className="flex-none">
-                        <DialogTitle>CSVファイルのインポート</DialogTitle>
-                      </DialogHeader>
-                      <div className="flex flex-1 flex-col gap-3">
-                        <Textarea
-                          className="flex-1"
-                          value={importedCSV}
-                          onChange={e => setImportedCSV(e.target.value)}
-                          placeholder={`GoogleスプレッドシートやExcelからインポートすることが出来ます。\n答え\t問題\n答え\t問題...\nの形式で入力してください。`}
-                        />
-                        <Button className="w-40 flex-none rounded-lg p-2" onClick={importFromCSV}>
-                          インポート
-                        </Button>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-                <Button className="rounded-lg p-2" onClick={() => setCreateMode("display")}>
-                  確定
+      <main className="m-auto max-w-6xl px-5 py-10">
+        {/* 設定ボタン類1 */}
+        <div>
+          {/* ファイルの読み込み用インプット */}
+          <Input type="file" accept=".learn-and-check.json" className="hidden" />
+          {/* ファイル読み込みボタン */}
+          <Button className="w-40 rounded-lg p-2" onClick={upload}>
+            ファイルを読み込む
+          </Button>
+        </div>
+
+        {/* ファイル名インプット */}
+        <Input
+          type="text"
+          defaultValue={fileData?.name}
+          onChange={e => setFileData({ ...fileData, name: e.target.value } as FileType)}
+          placeholder="タイトル"
+          className="flex-1 rounded-[5px] border border-solid border-[#767676]"
+        />
+
+        {/* カード部分 */}
+        <div className="grid w-full min-w-[12.5rem] list-decimal gap-5">
+          {fileData?.contents?.map((content, index) => (
+            <Card
+              key={content.id}
+              index={index}
+              content={content}
+              setFileData={setFileData}
+              resultData={resultData}
+              setResultData={setResultData}
+            />
+          ))}
+        </div>
+
+        {/* ボタン類2 */}
+        <div>
+          {/* カードの追加ボタン */}
+          <Button className=" w-40 rounded-lg p-2" onClick={addCard}>
+            カードを追加する
+          </Button>
+          {/* インポートダイアログ */}
+          <Dialog open={isDialogOpen} onOpenChange={() => setIsDialogOpen(!isDialogOpen)}>
+            <DialogTrigger asChild>
+              <Button className="w-40 rounded-lg p-2">CSVからインポートする</Button>
+            </DialogTrigger>
+            <DialogContent className="flex h-4/5 w-4/5 max-w-none flex-col">
+              <DialogHeader className="flex-none">
+                <DialogTitle>CSVファイルのインポート</DialogTitle>
+              </DialogHeader>
+              <div className="flex flex-1 flex-col gap-3">
+                <Textarea
+                  className="flex-1"
+                  value={importedCSV}
+                  onChange={e => setImportedCSV(e.target.value)}
+                  placeholder={`GoogleスプレッドシートやExcelからインポートすることが出来ます。\n問題\t答え\n問題\t答え...\nの形式で入力してください。`}
+                />
+                <Button className="w-40 flex-none rounded-lg p-2" onClick={importFromCSV}>
+                  確定する
                 </Button>
               </div>
-            </section>
-          ) : createMode === "display" ? (
-            <section className="flex w-full flex-col items-center gap-3">
-              <DataTable columns={columns} data={TableData}></DataTable>
-              <Button className="mx-2 w-40 rounded-lg p-2" onClick={() => setCreateMode("edit")}>
-                編集
-              </Button>
-            </section>
-          ) : (
-            <section>
-              <h1>エラーが発生しました。</h1>
-            </section>
-          )}
-
-          <div className="flex">
-            <Button className="mx-2 w-40 rounded-lg p-2" onClick={download}>
-              ファイルとして保存
-            </Button>
-            <VocabularyBook
-              fileData={fileData}
-              setFileData={setFileData}
-              isVocabularyStarted={isVocabularyStarted}
-              setIsVocabularyStarted={setIsVocabularyStarted}
-            />
-          </div>
+            </DialogContent>
+          </Dialog>
         </div>
+
+        {/* ボタン類3 */}
+        <div>
+          {/* 保存ボタン */}
+          <Button className="w-40 rounded-lg p-2" onClick={download}>
+            保存する
+          </Button>
+          {/* 単語帳開始ボタン */}
+          <Button
+            className=" inline-flex h-9 w-40 items-center justify-center whitespace-nowrap rounded-lg bg-primary p-2 text-sm font-medium text-primary-foreground shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+            disabled={fileData["contents"].length === 0}
+            onClick={() => setIsVocabularyStarted(!isVocabularyStarted)}>
+            単語帳を開始する
+          </Button>
+        </div>
+
+        {/* 単語帳 */}
+        <VocabularyBook
+          fileData={fileData}
+          setFileData={setFileData}
+          isVocabularyStarted={isVocabularyStarted}
+          setIsVocabularyStarted={setIsVocabularyStarted}
+        />
       </main>
     </>
   );
