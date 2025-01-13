@@ -18,9 +18,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { ColumnDef } from "@tanstack/react-table";
 import { useKeyboardShortcut } from "@/hooks/useKeyboardShortcut";
 import { UUID } from "crypto";
+import { reverse } from "dns";
 
 export type FileType = {
   name: string;
+  explanation: string;
   id: UUID;
   contents: {
     question: string;
@@ -71,9 +73,11 @@ const columns: ColumnDef<TableType>[] = [
 export default function Create() {
   const [fileData, setFileData] = useState<FileType>({
     name: "",
+    explanation: "",
     id: createUUID() as UUID,
     contents: [],
   });
+  console.log(fileData);
   const [resultData, setResultData] = useState<ResultType>({
     id: createUUID() as UUID,
     contents: [],
@@ -120,6 +124,19 @@ export default function Create() {
       setFileData(JSON.parse(data.content));
     });
   }
+  function reverseQA() {
+    setFileData({
+      ...fileData,
+      contents: fileData?.contents.map(content => {
+        return {
+          ...content,
+          question: content.answer,
+          answer: content.question,
+        };
+      }),
+    });
+  }
+
   useKeyboardShortcut(["ctrl", "m"], e => {
     e.preventDefault();
     addCard();
@@ -139,19 +156,20 @@ export default function Create() {
 
   return (
     <main className="m-auto flex max-w-6xl flex-col gap-6 px-5 py-10">
-      {/* title input */}
       <div className="flex flex-col gap-2">
+        {/* title input */}
         <Input
           type="text"
-          defaultValue={fileData?.name}
+          value={fileData?.name}
           onChange={e => setFileData({ ...fileData, name: e.target.value } as FileType)}
           placeholder="タイトル"
           className="flex-1 rounded border border-solid border-gray-400"
         />
-
         {/* explanation input */}
         <Input
           type="text"
+          value={fileData?.explanation}
+          onChange={e => setFileData({ ...fileData, explanation: e.target.value } as FileType)}
           placeholder="説明"
           className="flex-1 rounded border border-solid border-gray-400"
         />
@@ -185,6 +203,9 @@ export default function Create() {
             </div>
           </DialogContent>
         </Dialog>
+        <Button variant="outline" className="w-40 flex-none rounded-lg p-2" onClick={reverseQA}>
+          問題と答えを入れ替える
+        </Button>
       </div>
 
       {/* Card */}

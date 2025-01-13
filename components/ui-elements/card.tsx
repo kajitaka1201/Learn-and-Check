@@ -21,40 +21,28 @@ export default function Card({
       </span>
       <Input
         type="text"
-        defaultValue={content.question}
+        value={content.question}
         onChange={e => {
-          setFileData(prev => {
-            return {
-              ...prev,
-              contents:
-                prev?.contents.map(c => {
-                  if (c.id === content.id) {
-                    return { ...c, question: e.target.value };
-                  }
-                  return c;
-                }) || [],
-            };
-          });
+          setFileData(prev => ({
+            ...prev,
+            contents: prev.contents.map(c =>
+              c.id === content.id ? { ...c, question: e.target.value } : c
+            ),
+          }));
         }}
         placeholder="問題"
         className="min-w-[3rem] flex-1 rounded border border-solid border-gray-400 p-2"
       />
       <Input
         type="text"
-        defaultValue={content.answer}
+        value={content.answer}
         onChange={e => {
-          setFileData(prev => {
-            return {
-              ...prev,
-              contents:
-                prev?.contents.map(c => {
-                  if (c.id === content.id) {
-                    return { ...c, answer: e.target.value };
-                  }
-                  return c;
-                }) || [],
-            };
-          });
+          setFileData(prev => ({
+            ...prev,
+            contents: prev.contents.map(c =>
+              c.id === content.id ? { ...c, answer: e.target.value } : c
+            ),
+          }));
         }}
         placeholder="解答"
         className="min-w-[3rem] flex-1 rounded border border-solid border-gray-400 p-2"
