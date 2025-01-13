@@ -26,6 +26,7 @@ export type FileType = {
     question: string;
     answer: string;
     id: UUID;
+    isStared: boolean;
   }[];
 };
 export type TableType = {
@@ -86,7 +87,7 @@ export default function Create() {
       ...fileData,
       contents: [
         ...(fileData?.contents || []),
-        { question: "", answer: "", id: createUUID() as UUID },
+        { question: "", answer: "", id: createUUID() as UUID, isStared: false },
       ],
     });
   }
@@ -99,6 +100,7 @@ export default function Create() {
         question,
         answer,
         id: createUUID() as UUID,
+        isStared: false,
       };
     });
     setFileData({
@@ -136,7 +138,7 @@ export default function Create() {
   });
 
   return (
-    <main className="m-auto max-w-6xl px-5 py-10 flex flex-col gap-6">
+    <main className="m-auto flex max-w-6xl flex-col gap-6 px-5 py-10">
       {/* title input */}
       <div className="flex flex-col gap-2">
         <Input
@@ -191,12 +193,10 @@ export default function Create() {
           <Card key={content.id} index={index} content={content} setFileData={setFileData} />
         ))}
         {/* new card */}
-        <Button variant="outline" className="w-40 rounded-lg p-2 m-auto" onClick={addCard}>
+        <Button variant="outline" className="m-auto w-40 rounded-lg p-2" onClick={addCard}>
           カードを追加する
         </Button>
       </div>
-
-      
 
       {/* button */}
       <div>
