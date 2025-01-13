@@ -2,8 +2,7 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { FileType, ResultType } from "@/app/create/page";
-import { useState } from "react";
+import { FileType } from "@/app/create/page";
 import { cn } from "@/lib/utils";
 
 export default function Card({
