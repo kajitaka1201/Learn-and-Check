@@ -7,84 +7,55 @@ export default function Card({
   index,
   content,
   setFileData,
-  resultData,
-  setResultData,
 }: {
   index: number;
   content: FileType["contents"][number];
   setFileData: React.Dispatch<React.SetStateAction<FileType>>;
-  resultData: ResultType;
-  setResultData: React.Dispatch<React.SetStateAction<ResultType>>;
 }) {
   return (
-    <div className="flex w-full flex-wrap items-center justify-center gap-2">
-      <p>{index + 1}</p>
-      <div className="flex flex-1 gap-2">
-        <label className="flex-1">
-          <Input
-            type="text"
-            defaultValue={content.question}
-            onChange={e => {
-              setFileData(prev => {
-                return {
-                  ...prev,
-                  contents:
-                    prev?.contents.map(c => {
-                      if (c.id === content.id) {
-                        return { ...c, question: e.target.value };
-                      }
-                      return c;
-                    }) || [],
-                };
-              });
-            }}
-            placeholder="問題"
-            className="w-full min-w-[10rem] rounded-[5px] border border-solid border-[#767676]"
-          />
-        </label>
-        <label className="flex-1">
-          <Input
-            type="text"
-            defaultValue={content.answer}
-            onChange={e => {
-              setFileData(prev => {
-                return {
-                  ...prev,
-                  contents:
-                    prev?.contents.map(c => {
-                      if (c.id === content.id) {
-                        return { ...c, answer: e.target.value };
-                      }
-                      return c;
-                    }) || [],
-                };
-              });
-            }}
-            placeholder="解答"
-            className="w-full min-w-[10rem] rounded-[5px] border border-solid border-[#767676]"
-          />
-        </label>
-      </div>
-      <Checkbox
-        className="h-6 w-6"
-        checked={resultData.contents[index].latestResult}
-        onClick={() => {
-          setResultData(prev => {
+    <div className="mb-2 flex items-center gap-2 border border-gray-300 p-4">
+      <span className=" inline-block min-w-[3em] whitespace-nowrap text-right text-xl">
+        {index + 1}.
+      </span>
+      <Input
+        type="text"
+        defaultValue={content.question}
+        onChange={e => {
+          setFileData(prev => {
             return {
               ...prev,
-              contents: prev?.contents.map((c, i) => {
-                if (i === index) {
-                  return {
-                    ...c,
-                    latestResult: !c.latestResult,
-                    lastUpdated: new Date().toISOString(),
-                  };
-                }
-                return c;
-              }),
+              contents:
+                prev?.contents.map(c => {
+                  if (c.id === content.id) {
+                    return { ...c, question: e.target.value };
+                  }
+                  return c;
+                }) || [],
             };
           });
         }}
+        placeholder="問題"
+        className="min-w-[3rem] flex-1 rounded border border-solid border-gray-400 p-2"
+      />
+      <Input
+        type="text"
+        defaultValue={content.answer}
+        onChange={e => {
+          setFileData(prev => {
+            return {
+              ...prev,
+              contents:
+                prev?.contents.map(c => {
+                  if (c.id === content.id) {
+                    return { ...c, answer: e.target.value };
+                  }
+                  return c;
+                }) || [],
+            };
+          });
+        }}
+        placeholder="解答"
+        className="min-w-[3rem] flex-1 rounded border border-solid border-gray-400 p-2"
       />
       <Button
         onClick={() =>

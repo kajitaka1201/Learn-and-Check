@@ -122,10 +122,6 @@ export default function Create() {
     e.preventDefault();
     addCard();
   });
-  useKeyboardShortcut(["ctrl", "i"], e => {
-    e.preventDefault();
-    setIsDialogOpen(true);
-  });
   useKeyboardShortcut(["ctrl", "s"], e => {
     e.preventDefault();
     download();
@@ -140,94 +136,91 @@ export default function Create() {
   });
 
   return (
-    <>
-      <main className="m-auto max-w-6xl px-5 py-10">
-        {/* 設定ボタン類1 */}
-        <div>
-          {/* ファイルの読み込み用インプット */}
-          <Input type="file" accept=".learn-and-check.json" className="hidden" />
-          {/* ファイル読み込みボタン */}
-          <Button className="w-40 rounded-lg p-2" onClick={upload}>
-            ファイルを読み込む
-          </Button>
-        </div>
-
-        {/* ファイル名インプット */}
+    <main className="m-auto max-w-6xl px-5 py-10 flex flex-col gap-6">
+      {/* title input */}
+      <div className="flex flex-col gap-2">
         <Input
           type="text"
           defaultValue={fileData?.name}
           onChange={e => setFileData({ ...fileData, name: e.target.value } as FileType)}
           placeholder="タイトル"
-          className="flex-1 rounded-[5px] border border-solid border-[#767676]"
+          className="flex-1 rounded border border-solid border-gray-400"
         />
 
-        {/* カード部分 */}
-        <div className="grid w-full min-w-[12.5rem] list-decimal gap-5">
-          {fileData?.contents?.map((content, index) => (
-            <Card
-              key={content.id}
-              index={index}
-              content={content}
-              setFileData={setFileData}
-              resultData={resultData}
-              setResultData={setResultData}
-            />
-          ))}
-        </div>
-
-        {/* ボタン類2 */}
-        <div>
-          {/* カードの追加ボタン */}
-          <Button className=" w-40 rounded-lg p-2" onClick={addCard}>
-            カードを追加する
-          </Button>
-          {/* インポートダイアログ */}
-          <Dialog open={isDialogOpen} onOpenChange={() => setIsDialogOpen(!isDialogOpen)}>
-            <DialogTrigger asChild>
-              <Button className="w-40 rounded-lg p-2">CSVからインポートする</Button>
-            </DialogTrigger>
-            <DialogContent className="flex h-4/5 w-4/5 max-w-none flex-col">
-              <DialogHeader className="flex-none">
-                <DialogTitle>CSVファイルのインポート</DialogTitle>
-              </DialogHeader>
-              <div className="flex flex-1 flex-col gap-3">
-                <Textarea
-                  className="flex-1"
-                  value={importedCSV}
-                  onChange={e => setImportedCSV(e.target.value)}
-                  placeholder={`GoogleスプレッドシートやExcelからインポートすることが出来ます。\n問題\t答え\n問題\t答え...\nの形式で入力してください。`}
-                />
-                <Button className="w-40 flex-none rounded-lg p-2" onClick={importFromCSV}>
-                  確定する
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
-        </div>
-
-        {/* ボタン類3 */}
-        <div>
-          {/* 保存ボタン */}
-          <Button className="w-40 rounded-lg p-2" onClick={download}>
-            保存する
-          </Button>
-          {/* 単語帳開始ボタン */}
-          <Button
-            className=" inline-flex h-9 w-40 items-center justify-center whitespace-nowrap rounded-lg bg-primary p-2 text-sm font-medium text-primary-foreground shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
-            disabled={fileData["contents"].length === 0}
-            onClick={() => setIsVocabularyStarted(!isVocabularyStarted)}>
-            単語帳を開始する
-          </Button>
-        </div>
-
-        {/* 単語帳 */}
-        <VocabularyBook
-          fileData={fileData}
-          setFileData={setFileData}
-          isVocabularyStarted={isVocabularyStarted}
-          setIsVocabularyStarted={setIsVocabularyStarted}
+        {/* explanation input */}
+        <Input
+          type="text"
+          placeholder="説明"
+          className="flex-1 rounded border border-solid border-gray-400"
         />
-      </main>
-    </>
+      </div>
+
+      <div>
+        {/* import dialogue */}
+        <Dialog open={isDialogOpen} onOpenChange={() => setIsDialogOpen(!isDialogOpen)}>
+          <DialogTrigger asChild>
+            <Button variant="outline" className="w-40 rounded-lg p-2">
+              CSVからインポートする
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="flex h-4/5 w-4/5 max-w-none flex-col">
+            <DialogHeader className="flex-none">
+              <DialogTitle>CSVファイルのインポート</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-1 flex-col gap-3">
+              <Textarea
+                className="flex-1"
+                value={importedCSV}
+                onChange={e => setImportedCSV(e.target.value)}
+                placeholder={`GoogleスプレッドシートやExcelからインポートすることが出来ます。\n問題\t答え\n問題\t答え...\nの形式で入力してください。`}
+              />
+              <Button
+                variant="outline"
+                className="w-40 flex-none rounded-lg p-2"
+                onClick={importFromCSV}>
+                確定する
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      {/* Card */}
+      <div className="grid w-full min-w-[12.5rem] list-decimal gap-2">
+        {fileData?.contents?.map((content, index) => (
+          <Card key={content.id} index={index} content={content} setFileData={setFileData} />
+        ))}
+        {/* new card */}
+        <Button variant="outline" className="w-40 rounded-lg p-2 m-auto" onClick={addCard}>
+          カードを追加する
+        </Button>
+      </div>
+
+      
+
+      {/* button */}
+      <div>
+        {/* save button */}
+        <Button variant="outline" className="w-40 rounded-lg p-2" onClick={download}>
+          保存する
+        </Button>
+        {/* start button */}
+        <Button
+          variant="outline"
+          className="w-40 rounded-lg p-2"
+          disabled={fileData["contents"].length === 0}
+          onClick={() => setIsVocabularyStarted(!isVocabularyStarted)}>
+          単語帳を開始する
+        </Button>
+      </div>
+
+      {/* 単語帳 */}
+      <VocabularyBook
+        fileData={fileData}
+        setFileData={setFileData}
+        isVocabularyStarted={isVocabularyStarted}
+        setIsVocabularyStarted={setIsVocabularyStarted}
+      />
+    </main>
   );
 }

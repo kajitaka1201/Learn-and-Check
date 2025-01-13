@@ -32,7 +32,6 @@ export default function VocabularyBook({
     <Dialog open={isVocabularyStarted} onOpenChange={setIsVocabularyStarted}>
       <DialogContent
         className="flex h-4/5 w-4/5 max-w-none flex-col"
-        onEscapeKeyDown={e => e.preventDefault()}
         onPointerDownOutside={e => e.preventDefault()}>
         {isVocabularyStarted && <DialogBody fileData={fileData} setFileData={setFileData} />}
       </DialogContent>
