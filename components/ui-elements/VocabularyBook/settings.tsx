@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { formSchema } from ".";
+import { formSchema } from "./page";
 
 export default function Settings({
   setSettings,
@@ -18,7 +18,7 @@ export default function Settings({
     defaultValues: {
       useAnswerColumn: false,
       randomQuestion: false,
-      excludeCheckedQuestions: false,
+      limitToStarred: false,
     },
   });
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -69,7 +69,7 @@ export default function Settings({
           />
           <FormField
             control={form.control}
-            name="excludeCheckedQuestions"
+            name="limitToStarred"
             render={({ field }) => {
               return (
                 <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow">
@@ -80,7 +80,7 @@ export default function Settings({
                       className="h-5 w-5"
                     />
                   </FormControl>
-                  <FormLabel className="w-full">チェック済みの問題を除外する</FormLabel>
+                  <FormLabel className="w-full">スターが付いた物に限定する</FormLabel>
                 </FormItem>
               );
             }}

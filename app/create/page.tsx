@@ -6,7 +6,7 @@ import { useState } from "react";
 import { v4 as createUUID } from "uuid";
 import { downloadFile } from "@/lib/download";
 import { uploadFile } from "@/lib/upload";
-import VocabularyBook from "@/components/ui-elements/VocabularyBook";
+import VocabularyBook from "@/components/ui-elements/VocabularyBook/page";
 import {
   Dialog,
   DialogContent,
@@ -18,7 +18,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { ColumnDef } from "@tanstack/react-table";
 import { useKeyboardShortcut } from "@/hooks/useKeyboardShortcut";
 import { UUID } from "crypto";
-import { reverse } from "dns";
 
 export type FileType = {
   name: string;

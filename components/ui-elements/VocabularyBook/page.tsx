@@ -14,7 +14,7 @@ import { FileType } from "@/app/create/page";
 export const formSchema = z.object({
   useAnswerColumn: z.boolean(),
   randomQuestion: z.boolean(),
-  excludeCheckedQuestions: z.boolean(),
+  limitToStarred: z.boolean(),
 });
 
 export default function VocabularyBook({
@@ -49,7 +49,7 @@ function DialogBody({
   const [settings, setSettings] = useState<z.infer<typeof formSchema>>({
     useAnswerColumn: false,
     randomQuestion: false,
-    excludeCheckedQuestions: false,
+    limitToStarred: false,
   });
   return (
     <>
