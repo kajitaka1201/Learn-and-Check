@@ -15,25 +15,19 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { ColumnDef } from "@tanstack/react-table";
 import { useKeyboardShortcut } from "@/hooks/useKeyboardShortcut";
 import { UUID } from "crypto";
 
 export type FileType = {
+  id: UUID;
   name: string;
   explanation: string;
-  id: UUID;
   contents: {
+    id: UUID;
     question: string;
     answer: string;
-    id: UUID;
     isStared: boolean;
   }[];
-};
-export type TableType = {
-  index: number;
-  question: string;
-  answer: string;
 };
 export type ResultType = {
   id: UUID;
@@ -44,30 +38,6 @@ export type ResultType = {
     lastUpdated: string;
   }[];
 };
-const columns: ColumnDef<TableType>[] = [
-  {
-    accessorKey: "index",
-    header: () => <>No.</>,
-    cell: ({ row }) => {
-      const index = row.index + 1;
-      return <div>{index}</div>;
-    },
-  },
-  {
-    accessorKey: "question",
-    header: () => <>問題</>,
-    cell: ({ row }) => {
-      return <div className="text-right">{row.original.question}</div>;
-    },
-  },
-  {
-    accessorKey: "answer",
-    header: () => <>答え</>,
-    cell: ({ row }) => {
-      return <div>{row.original.answer}</div>;
-    },
-  },
-];
 
 export default function Create() {
   const [fileData, setFileData] = useState<FileType>({
