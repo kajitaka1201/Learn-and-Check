@@ -1,6 +1,6 @@
 "use client";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Input } from "@nextui-org/input";
+import { Button } from "@nextui-org/button";
 import Card from "@/components/ui-elements/card";
 import { useState } from "react";
 import { v4 as createUUID } from "uuid";
@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
+import { Textarea } from "@nextui-org/input";
 import { useKeyboardShortcut } from "@/hooks/useKeyboardShortcut";
 import { UUID } from "crypto";
 
@@ -148,7 +148,7 @@ export default function Create() {
         {/* import dialogue */}
         <Dialog open={isDialogOpen} onOpenChange={() => setIsDialogOpen(!isDialogOpen)}>
           <DialogTrigger asChild>
-            <Button variant="outline" className="w-40 rounded-lg p-2">
+            <Button className="w-40 rounded-lg p-2">
               CSVからインポートする
             </Button>
           </DialogTrigger>
@@ -164,7 +164,6 @@ export default function Create() {
                 placeholder={`GoogleスプレッドシートやExcelからインポートすることが出来ます。\n問題\t答え\n問題\t答え...\nの形式で入力してください。`}
               />
               <Button
-                variant="outline"
                 className="w-40 flex-none rounded-lg p-2"
                 onClick={importFromCSV}>
                 確定する
@@ -172,7 +171,7 @@ export default function Create() {
             </div>
           </DialogContent>
         </Dialog>
-        <Button variant="outline" className="w-40 flex-none rounded-lg p-2" onClick={reverseQA}>
+        <Button className="w-40 flex-none rounded-lg p-2" onClick={reverseQA}>
           問題と答えを入れ替える
         </Button>
       </div>
@@ -183,7 +182,7 @@ export default function Create() {
           <Card key={content.id} index={index} content={content} setFileData={setFileData} />
         ))}
         {/* new card */}
-        <Button variant="outline" className="m-auto w-40 rounded-lg p-2" onClick={addCard}>
+        <Button className="m-auto w-40 rounded-lg p-2" onClick={addCard}>
           カードを追加する
         </Button>
       </div>
@@ -191,12 +190,11 @@ export default function Create() {
       {/* button */}
       <div>
         {/* save button */}
-        <Button variant="outline" className="w-40 rounded-lg p-2" onClick={download}>
+        <Button className="w-40 rounded-lg p-2" onClick={download}>
           保存する
         </Button>
         {/* start button */}
         <Button
-          variant="outline"
           className="w-40 rounded-lg p-2"
           disabled={fileData["contents"].length === 0}
           onClick={() => setIsVocabularyStarted(!isVocabularyStarted)}>

@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
+import { Button } from "@nextui-org/button";
+import { Checkbox } from "@nextui-org/checkbox";
+import { Input } from "@nextui-org/input";
 import { FileType } from "@/app/create/page";
 import { z } from "zod";
 import { formSchema } from "./page";

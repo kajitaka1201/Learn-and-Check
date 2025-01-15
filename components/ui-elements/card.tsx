@@ -1,7 +1,7 @@
 "use state";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@nextui-org/input";
+import { Button } from "@nextui-org/button";
+import { Checkbox } from "@nextui-org/checkbox";
 import { FileType } from "@/app/create/page";
 import { cn } from "@/lib/utils";
 
@@ -51,7 +51,7 @@ export default function Card({
         <Checkbox
           className="hidden cursor-pointer"
           checked={content.isStared}
-          onCheckedChange={() =>
+          onChange={() =>
             setFileData(prev => ({
               ...prev,
               contents: prev.contents.map(c =>

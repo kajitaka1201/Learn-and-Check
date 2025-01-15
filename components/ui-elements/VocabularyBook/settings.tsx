@@ -2,8 +2,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@nextui-org/button";
+import { Checkbox } from "@nextui-org/checkbox";
 import { formSchema } from "./page";
 
 export default function Settings({
@@ -40,7 +40,7 @@ export default function Settings({
                   <FormControl>
                     <Checkbox
                       checked={field.value}
-                      onCheckedChange={field.onChange}
+                      onChange={field.onChange}
                       className="h-5 w-5"
                     />
                   </FormControl>
@@ -58,7 +58,7 @@ export default function Settings({
                   <FormControl>
                     <Checkbox
                       checked={field.value}
-                      onCheckedChange={field.onChange}
+                      onChange={field.onChange}
                       className="h-5 w-5"
                     />
                   </FormControl>
@@ -76,7 +76,7 @@ export default function Settings({
                   <FormControl>
                     <Checkbox
                       checked={field.value}
-                      onCheckedChange={field.onChange}
+                      onChange={field.onChange}
                       className="h-5 w-5"
                     />
                   </FormControl>
