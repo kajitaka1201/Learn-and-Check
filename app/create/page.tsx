@@ -30,9 +30,9 @@ export type FileType = {
   }[];
 };
 export type ResultType = {
-  id: UUID;
+  id: UUID; // same as FileType.id
   contents: {
-    id: UUID;
+    id: UUID; // same as FileType.contents.id
     correctRate: number;
     latestResult: boolean;
     lastUpdated: string;
