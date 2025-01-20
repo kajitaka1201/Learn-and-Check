@@ -1,7 +1,7 @@
 "use state";
-import { Input } from "@nextui-org/input";
-import { Button } from "@nextui-org/button";
-import { Checkbox } from "@nextui-org/checkbox";
+import { Input } from "@heroui/input";
+import { Button } from "@heroui/button";
+import { Checkbox } from "@heroui/checkbox";
 import { FileType } from "@/app/create/page";
 import { cn } from "@/lib/utils";
 
@@ -30,8 +30,8 @@ export default function Card({
             ),
           }));
         }}
-        placeholder="問題"
-        className="min-w-[3rem] flex-1 rounded border border-solid border-gray-400 p-2"
+        placeholder="問題を入力して下さい"
+        label="問題"
       />
       <Input
         type="text"
@@ -44,12 +44,12 @@ export default function Card({
             ),
           }));
         }}
-        placeholder="解答"
-        className="min-w-[3rem] flex-1 rounded border border-solid border-gray-400 p-2"
+        placeholder="解答を入力して下さい"
+        label="解答"
       />
       <label className="relative block cursor-pointer select-none">
         <Checkbox
-          className="hidden cursor-pointer"
+          className="hidden"
           checked={content.isStared}
           onChange={() =>
             setFileData(prev => ({
@@ -79,7 +79,7 @@ export default function Card({
         </svg>
       </label>
       <Button
-        onClick={() =>
+        onPress={() =>
           setFileData(prev => {
             return {
               ...prev,

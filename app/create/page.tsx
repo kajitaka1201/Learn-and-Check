@@ -1,22 +1,16 @@
 "use client";
-import { Input } from "@nextui-org/input";
-import { Button } from "@nextui-org/button";
+import { Input } from "@heroui/input";
+import { Button } from "@heroui/button";
 import Card from "@/components/ui-elements/card";
 import { useState } from "react";
 import { v4 as createUUID } from "uuid";
 import { downloadFile } from "@/lib/download";
 import { uploadFile } from "@/lib/upload";
 import VocabularyBook from "@/components/ui-elements/VocabularyBook/page";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Textarea } from "@nextui-org/input";
+import { Textarea } from "@heroui/input";
 import { useKeyboardShortcut } from "@/hooks/useKeyboardShortcut";
 import { UUID } from "crypto";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@heroui/modal";
 
 export type FileType = {
   id: UUID;
@@ -47,12 +41,13 @@ export default function Create() {
     contents: [],
   });
   console.log(fileData);
+  console.log(fileData["contents"].length);
   const [resultData, setResultData] = useState<ResultType>({
     id: createUUID() as UUID,
     contents: [],
   });
   const [importedCSV, setImportedCSV] = useState<string>("");
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isVocabularyStarted, setIsVocabularyStarted] = useState<boolean>(false);
 
   function addCard() {
@@ -80,7 +75,7 @@ export default function Create() {
       ...fileData,
       contents: [...(fileData?.contents || []), ...newContents],
     });
-    setIsDialogOpen(false);
+    setIsModalOpen(false);
   }
   function download() {
     downloadFile({
@@ -131,49 +126,39 @@ export default function Create() {
           type="text"
           value={fileData?.name}
           onChange={e => setFileData({ ...fileData, name: e.target.value } as FileType)}
-          placeholder="タイトル"
-          className="flex-1 rounded border border-solid border-gray-400"
+          placeholder="ファイル名を入力して下さい"
+          label="ファイル名"
         />
         {/* explanation input */}
         <Input
           type="text"
           value={fileData?.explanation}
           onChange={e => setFileData({ ...fileData, explanation: e.target.value } as FileType)}
-          placeholder="説明"
-          className="flex-1 rounded border border-solid border-gray-400"
+          placeholder="説明を入力して下さい"
+          label="説明"
         />
       </div>
 
       <div>
-        {/* import dialogue */}
-        <Dialog open={isDialogOpen} onOpenChange={() => setIsDialogOpen(!isDialogOpen)}>
-          <DialogTrigger asChild>
-            <Button className="w-40 rounded-lg p-2">
-              CSVからインポートする
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="flex h-4/5 w-4/5 max-w-none flex-col">
-            <DialogHeader className="flex-none">
-              <DialogTitle>CSVファイルのインポート</DialogTitle>
-            </DialogHeader>
-            <div className="flex flex-1 flex-col gap-3">
+        {/* import Modal */}
+        <Button onPress={() => setIsModalOpen(!isModalOpen)}>CSVからインポートする</Button>
+        <Modal isOpen={isModalOpen} onOpenChange={() => setIsModalOpen(!isModalOpen)}>
+          <ModalContent className="flex h-4/5 w-4/5 max-w-none flex-col">
+            <ModalHeader className="flex-none">CSVファイルのインポート</ModalHeader>
+            <div className="m-5 flex flex-1 flex-col gap-3">
               <Textarea
-                className="flex-1"
+                className="![&>div]:h-none ![&>textarea]:h-none flex-1 [&>]:"
                 value={importedCSV}
                 onChange={e => setImportedCSV(e.target.value)}
                 placeholder={`GoogleスプレッドシートやExcelからインポートすることが出来ます。\n問題\t答え\n問題\t答え...\nの形式で入力してください。`}
               />
-              <Button
-                className="w-40 flex-none rounded-lg p-2"
-                onClick={importFromCSV}>
+              <Button onPress={importFromCSV} className="flex-none">
                 確定する
               </Button>
             </div>
-          </DialogContent>
-        </Dialog>
-        <Button className="w-40 flex-none rounded-lg p-2" onClick={reverseQA}>
-          問題と答えを入れ替える
-        </Button>
+          </ModalContent>
+        </Modal>
+        <Button onPress={reverseQA}>問題と答えを入れ替える</Button>
       </div>
 
       {/* Card */}
@@ -182,22 +167,17 @@ export default function Create() {
           <Card key={content.id} index={index} content={content} setFileData={setFileData} />
         ))}
         {/* new card */}
-        <Button className="m-auto w-40 rounded-lg p-2" onClick={addCard}>
-          カードを追加する
-        </Button>
+        <Button onPress={addCard}>カードを追加する</Button>
       </div>
 
       {/* button */}
       <div>
         {/* save button */}
-        <Button className="w-40 rounded-lg p-2" onClick={download}>
-          保存する
-        </Button>
+        <Button onPress={download}>保存する</Button>
         {/* start button */}
         <Button
-          className="w-40 rounded-lg p-2"
-          disabled={fileData["contents"].length === 0}
-          onClick={() => setIsVocabularyStarted(!isVocabularyStarted)}>
+          isDisabled={fileData.contents.length === 0}
+          onPress={() => setIsVocabularyStarted(!isVocabularyStarted)}>
           単語帳を開始する
         </Button>
       </div>

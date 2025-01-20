@@ -6,16 +6,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import { z } from "zod";
 import Settings from "./settings";
 import Use from "./use";
 import { FileType } from "@/app/create/page";
 
-export const formSchema = z.object({
-  useAnswerColumn: z.boolean(),
-  randomQuestion: z.boolean(),
-  limitToStarred: z.boolean(),
-});
+export type FormSchema = {
+  useAnswerColumn: boolean,
+  randomQuestion: boolean,
+  limitToStarred: boolean,
+};
 
 export default function VocabularyBook({
   fileData,
@@ -46,7 +45,7 @@ function DialogBody({
   setFileData: React.Dispatch<React.SetStateAction<FileType>>;
 }) {
   const [mode, setMode] = useState<"set" | "use" | "result">("set");
-  const [settings, setSettings] = useState<z.infer<typeof formSchema>>({
+  const [settings, setSettings] = useState<FormSchema>({
     useAnswerColumn: false,
     randomQuestion: false,
     limitToStarred: false,

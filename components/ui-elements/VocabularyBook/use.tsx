@@ -1,9 +1,8 @@
-import { Button } from "@nextui-org/button";
-import { Checkbox } from "@nextui-org/checkbox";
-import { Input } from "@nextui-org/input";
+import { Button } from "@heroui/button";
+import { Checkbox } from "@heroui/checkbox";
+import { Input } from "@heroui/input";
 import { FileType } from "@/app/create/page";
-import { z } from "zod";
-import { formSchema } from "./page";
+import { FormSchema } from "./page";
 import { useState } from "react";
 import { useKeyboardShortcut } from "@/hooks/useKeyboardShortcut";
 import { cn } from "@/lib/utils";
@@ -15,7 +14,7 @@ export default function Use({
 }: {
   fileData: FileType;
   setFileData: React.Dispatch<React.SetStateAction<FileType>>;
-  Settings: z.infer<typeof formSchema>;
+  Settings: FormSchema;
 }) {
   const [index, setIndex] = useState(0);
   const [inputValue, setInputValue] = useState("");
@@ -113,10 +112,10 @@ export default function Use({
                   return (
                     <label className="relative block cursor-pointer select-none">
                       <Checkbox
-                        className="hidden cursor-pointer"
+                        className="hidden"
                         checked={fileData["contents"].find(e => e.id === idList[index])?.isStared}
-                        onClick={() => {
-                          setFileData(prev => {
+                        onChange={() => {
+                          return setFileData(prev => {
                             return {
                               ...prev,
                               contents:
@@ -154,11 +153,7 @@ export default function Use({
                 })()}{" "}
               </div>
             ) : (
-              <Button
-                className="h-auto w-full flex-none rounded-lg p-2 text-4xl"
-                onClick={checkAnswer}>
-                確認
-              </Button>
+              <Button onPress={checkAnswer}>確認</Button>
             )}
           </div>
         </div>
@@ -166,7 +161,7 @@ export default function Use({
         <div className="relative flex-none">
           <div className="flex items-center justify-center">
             <div>
-              <Button onClick={handleReturn} disabled={index === 0}>
+              <Button onPress={handleReturn} disabled={index === 0}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="32"
@@ -183,7 +178,7 @@ export default function Use({
               </p>
             </div>
             <div>
-              <Button onClick={handleNext} disabled={index === idList.length - 1}>
+              <Button onPress={handleNext} disabled={index === idList.length - 1}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="32"
@@ -198,12 +193,7 @@ export default function Use({
         </div>
         {Settings.useAnswerColumn && (
           <div className="bg-blue-200 p-4">
-            <Input
-              type="text"
-              placeholder="回答欄"
-              className="rounded-[5px] border border-solid border-[#767676]"
-              onChange={e => setInputValue(e.target.value)}
-            />
+            <Input type="text" placeholder="回答欄" onChange={e => setInputValue(e.target.value)} />
           </div>
         )}
       </div>
